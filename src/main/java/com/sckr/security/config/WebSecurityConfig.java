@@ -18,8 +18,7 @@ import org.springframework.security.web.access.expression.DefaultWebSecurityExpr
 
 /**
  * spring Security配置安全控制中心
- *
- * @author zhoukb
+ * @author xiaobin
  */
 @Configuration
 @EnableWebSecurity

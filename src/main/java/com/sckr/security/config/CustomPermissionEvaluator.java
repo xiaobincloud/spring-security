@@ -1,7 +1,5 @@
 package com.sckr.security.config;
 
-import com.sckr.security.po.SourceTreeVO;
-import com.sckr.security.po.SysUser;
 import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -13,8 +11,8 @@ import java.util.Collection;
 /**
  * 我们需要自定义对hasPermission()方法的处理，
  * 就需要自定义PermissionEvaluator，创建类CustomPermissionEvaluator，实现PermissionEvaluator接口。
- * @author zhoukebo
- * @date 2018/9/5
+ * @author xiaobin
+ * @date 2019/6/3
  */
 @Component
 public class CustomPermissionEvaluator implements PermissionEvaluator {
@@ -28,16 +26,16 @@ public class CustomPermissionEvaluator implements PermissionEvaluator {
     @Override
     public boolean hasPermission(Authentication authentication, Object targetDomainObject, Object permission) {
         // 获得loadUserByUsername()方法的结果
-        SysUser user = (SysUser)authentication.getPrincipal();
+        CustomerUserDetails user = (CustomerUserDetails)authentication.getPrincipal();
         // 获得loadUserByUsername()中注入的权限
         Collection<? extends GrantedAuthority> authorities = user.getAuthorities();
         // 遍历用户权限进行判定
         for(GrantedAuthority authority : authorities) {
-            SourceTreeVO sourceTreeVO = (SourceTreeVO) authority;
-            String permissionUrl = sourceTreeVO.getAuthority();
-            // 如果访问的Url和权限用户符合的话，返回true
-            if(targetDomainObject.equals(permissionUrl)) {
-                return true;
+            String needRole = authority.getAuthority();
+            for (GrantedAuthority ga : authentication.getAuthorities()) {
+                if (needRole.equals(ga.getAuthority())) {
+                    return true;
+                }
             }
         }
         return false;

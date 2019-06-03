@@ -14,16 +14,8 @@ import java.util.List;
 @Data
 public class SysResource extends BaseEntity{
 
-    /**控制的url*/
-    private String resourceString;
-    /**资源ID*/
-//    private String resourceId;
-    /**备注*/
-    private String remark;
     /**资源名称*/
     private String resourceName;
-    /**资源对应的方法名*/
-    private String methodName;
     /**资源所对应的包路径*/
     private String methodPath;
     /**一级资源*/

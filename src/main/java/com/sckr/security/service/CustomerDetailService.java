@@ -1,12 +1,10 @@
 package com.sckr.security.service;
 
-import com.sckr.security.po.SourceTreeVO;
-import com.sckr.security.po.SysResource;
+import com.sckr.security.config.CustomerUserDetails;
 import com.sckr.security.po.SysRole;
-import com.sckr.security.po.SysUser;
 import com.sckr.security.repository.SysUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -26,37 +24,25 @@ public class CustomerDetailService implements UserDetailsService {
     @Autowired
     private SysUserRepository userRepository;
 
-    @Autowired
-    private SysResourceService sysResourceService;
-
+    /**
+     * 根据用户查询授权的角色信息
+     * @param username
+     * @return
+     * @throws UsernameNotFoundException
+     */
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        SysUser user = userRepository.findByUsername(username);
+        CustomerUserDetails user = new CustomerUserDetails(userRepository.findByUsername(username));
         if (user == null) {
             throw new UsernameNotFoundException("用户名不存在");
         }
-        List<SysRole> roles = user.getRoles();
-        List<String> resourceIds = new ArrayList<>();
+        List<SysRole> roles = user.user().getRoles();
         //将所有的角色对应的资源权限全部放入user对应的grantedAuthority集合中
+        List<SimpleGrantedAuthority> authRoles = new ArrayList<>();
         for (SysRole role : roles) {
-            // TODO 修改用户资源TREE结构
-            for (SysResource resource : role.getResources()) {
-                resourceIds.add(resource.getId());
-            }
+            authRoles.add(new SimpleGrantedAuthority("ROLE_"+role.getName()));
         }
-        List<SourceTreeVO> sourceTreeVOS = sysResourceService.sourceTree(resourceIds);
-        user.setGrantedAuthority(sourceTreeVOS);
-//        for (SysRole role : roles) {
-//            List<SysResource> resources = role.getResources();
-//            List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
-//            for (SysResource resource : resources) {
-//                if (resource != null && resource.getResourceName()!=null) {
-//                    GrantedAuthority grantedAuthority = new UrlGrantedAuthority(resource.getMethodPath(),resource.getResourceName());
-//                    grantedAuthorities.add(grantedAuthority);
-//                }
-//            }
-//            user.setGrantedAuthority(grantedAuthorities);
-//        }
+        user.setGrantedAuthority(authRoles);
         return user;
     }
 }
