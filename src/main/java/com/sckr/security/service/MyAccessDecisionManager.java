@@ -14,7 +14,7 @@ import java.util.Iterator;
 /**
  * @author xiaobin
  * @date 2019/6/03
- * @deprecated 进行角色鉴权
+ * @Description 进行角色鉴权
  */
 @Configuration
 public class MyAccessDecisionManager implements AccessDecisionManager {
