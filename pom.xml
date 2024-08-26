@@ -22,7 +22,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>1.8</java.version>
-        <springfox.swagger2>2.9.2</springfox.swagger2>
+        <springfox.swagger2>2.10.0</springfox.swagger2>
         <swagger.bootui>1.9.3</swagger.bootui>
         <net.logstash.logback>4.9</net.logstash.logback>
     </properties>
